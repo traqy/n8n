@@ -1,15 +1,8 @@
 import type { BooleanLicenseFeature } from '@n8n/constants';
-import { Container } from '@n8n/di';
 
-import { ControllerRegistryMetadata } from './controller-registry-metadata';
-import type { Controller } from './types';
-
+// Licensed decorator is now a no-op since all features are unlicensed
 export const Licensed =
-	(licenseFeature: BooleanLicenseFeature): MethodDecorator =>
-	(target, handlerName) => {
-		const routeMetadata = Container.get(ControllerRegistryMetadata).getRouteMetadata(
-			target.constructor as Controller,
-			String(handlerName),
-		);
-		routeMetadata.licenseFeature = licenseFeature;
+	(_licenseFeature: BooleanLicenseFeature): MethodDecorator =>
+	() => {
+		// No-op - all features are now unlicensed/available
 	};

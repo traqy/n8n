@@ -19,7 +19,7 @@ import { ActiveExecutions } from '@/active-executions';
 import { ActiveWorkflowManager } from '@/active-workflow-manager';
 import config from '@/config';
 import { EDITOR_UI_DIST_DIR } from '@/constants';
-import { FeatureNotLicensedError } from '@/errors/feature-not-licensed.error';
+// FeatureNotLicensedError removed - licensing disabled
 import { MessageEventBus } from '@/eventbus/message-event-bus/message-event-bus';
 import { EventService } from '@/events/event.service';
 import { ExecutionService } from '@/executions/execution.service';
@@ -183,12 +183,7 @@ export class Start extends BaseCommand<z.infer<typeof flagsSchema>> {
 
 		this.instanceSettings.setMultiMainEnabled(isMultiMainEnabled);
 
-		/**
-		 * We temporarily license multi-main to allow it to set instance role,
-		 * which is needed by license init. Once the license is initialized,
-		 * the actual value will be used for the license check.
-		 */
-		if (isMultiMainEnabled) this.instanceSettings.setMultiMainLicensed(true);
+		// License initialization removed - all features are now unlicensed
 
 		if (config.getEnv('executions.mode') === 'regular') {
 			this.instanceSettings.markAsLeader();
@@ -196,11 +191,7 @@ export class Start extends BaseCommand<z.infer<typeof flagsSchema>> {
 			await this.initOrchestration();
 		}
 
-		await this.initLicense();
-
-		if (isMultiMainEnabled && !this.license.isMultiMainLicensed()) {
-			throw new FeatureNotLicensedError(LICENSE_FEATURES.MULTIPLE_MAIN_INSTANCES);
-		}
+		// Multi-main is now always enabled since licensing is removed
 
 		Container.get(WaitTracker).init();
 		this.logger.debug('Wait tracker init complete');

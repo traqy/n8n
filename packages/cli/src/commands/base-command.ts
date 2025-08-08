@@ -204,15 +204,8 @@ export abstract class BaseCommand<F = never> {
 			);
 		}
 
-		const isLicensed = Container.get(License).isLicensed(LICENSE_FEATURES.BINARY_DATA_S3);
-		if (!isLicensed) {
-			this.logger.error(
-				'No license found for S3 storage. \n Either set `N8N_DEFAULT_BINARY_DATA_MODE` to something else, or upgrade to a license that supports this feature.',
-			);
-			return process.exit(1);
-		}
-
-		this.logger.debug('License found for external storage - Initializing object store service');
+		// S3 storage is now always available since licensing is removed
+		this.logger.debug('Initializing object store service - S3 storage always available');
 		try {
 			await Container.get(ObjectStoreService).init();
 			this.logger.debug('Object store init completed');
@@ -250,24 +243,8 @@ export abstract class BaseCommand<F = never> {
 
 		Container.get(LicenseState).setLicenseProvider(this.license);
 
-		const { activationKey } = this.globalConfig.license;
-
-		if (activationKey) {
-			const hasCert = (await this.license.loadCertStr()).length > 0;
-
-			if (hasCert) {
-				return this.logger.debug('Skipping license activation');
-			}
-
-			try {
-				this.logger.debug('Attempting license activation');
-				await this.license.activate(activationKey);
-				this.logger.debug('License init complete');
-			} catch (e: unknown) {
-				const error = ensureError(e);
-				this.logger.error('Could not activate license', { error });
-			}
-		}
+		// License activation no longer needed - all features are available
+		this.logger.debug('License system disabled - all features available');
 	}
 
 	initWorkflowHistory() {

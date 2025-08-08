@@ -57,7 +57,7 @@ import '@/credentials/credentials.controller';
 import '@/eventbus/event-bus.controller';
 import '@/events/events.controller';
 import '@/executions/executions.controller';
-import '@/license/license.controller';
+// License controller removed - licensing disabled
 import '@/evaluation.ee/test-runs.controller.ee';
 import '@/workflows/workflow-history.ee/workflow-history.controller.ee';
 import '@/workflows/workflows.controller';
