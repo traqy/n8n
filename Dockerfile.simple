@@ -1,0 +1,31 @@
+# Simple Dockerfile for n8n with licensing removed
+FROM n8nio/n8n:latest
+
+# Switch to root to make modifications
+USER root
+
+# Copy our modified license files
+COPY packages/cli/src/license.ts /usr/local/lib/node_modules/n8n/dist/src/license.js
+COPY packages/@n8n/backend-common/src/license-state.ts /usr/local/lib/node_modules/n8n/node_modules/@n8n/backend-common/dist/src/license-state.js
+COPY packages/@n8n/decorators/src/controller/licensed.ts /usr/local/lib/node_modules/n8n/node_modules/@n8n/decorators/dist/src/controller/licensed.js
+
+# Update package metadata to reflect unlicensed version
+RUN echo '{"name": "n8n-unlicensed", "version": "unlicensed", "description": "n8n with all features unlicensed"}' > /tmp/package-info.json
+
+# Create a startup script that shows licensing info
+RUN echo '#!/bin/sh' > /usr/local/bin/n8n-unlicensed && \
+    echo 'echo "🚀 Starting n8n with ALL FEATURES UNLICENSED"' >> /usr/local/bin/n8n-unlicensed && \
+    echo 'echo "✅ All Enterprise features are available without licensing"' >> /usr/local/bin/n8n-unlicensed && \
+    echo 'exec n8n "$@"' >> /usr/local/bin/n8n-unlicensed && \
+    chmod +x /usr/local/bin/n8n-unlicensed
+
+# Switch back to node user
+USER node
+
+# Use our custom startup script
+ENTRYPOINT ["tini", "--", "/usr/local/bin/n8n-unlicensed"]
+
+LABEL org.opencontainers.image.title="n8n-unlicensed" \
+      org.opencontainers.image.description="n8n with all Enterprise features unlicensed" \
+      org.opencontainers.image.version="unlicensed"
+

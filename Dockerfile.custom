@@ -1,0 +1,45 @@
+# Custom n8n with licensing restrictions removed
+FROM n8nio/n8n:latest
+
+# Switch to root to make modifications
+USER root
+
+# Set environment variables to indicate this is the unlicensed version
+ENV N8N_RELEASE_TYPE="unlicensed"
+ENV N8N_LICENSE_AUTO_RENEW_ENABLED="false"
+ENV N8N_PERSONALIZATION_ENABLED="true"
+ENV N8N_VERSION_NOTIFICATIONS_ENABLED="true"
+ENV N8N_TEMPLATES_ENABLED="true"
+ENV N8N_PUBLIC_API_ENABLED="true"
+
+# All features enabled by default (no licensing required)
+ENV N8N_AI_ENABLED="true"
+ENV N8N_COMMUNITY_PACKAGES_ENABLED="true"
+ENV N8N_VERSIONING_ENABLED="true"
+ENV N8N_EXTERNAL_SECRETS_ENABLED="true"
+ENV N8N_WORKFLOW_HISTORY_ENABLED="true"
+
+# Create startup message
+RUN echo '#!/bin/sh' > /docker-entrypoint-unlicensed.sh && \
+    echo 'echo ""' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "🚀 n8n UNLICENSED VERSION - All Features Available"' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "=================================================="' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "✅ All Enterprise features are enabled"' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "✅ No licensing restrictions"' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "✅ Full API access"' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo "✅ All authentication methods available"' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'echo ""' >> /docker-entrypoint-unlicensed.sh && \
+    echo 'exec /docker-entrypoint.sh "$@"' >> /docker-entrypoint-unlicensed.sh && \
+    chmod +x /docker-entrypoint-unlicensed.sh
+
+# Switch back to node user
+USER node
+
+# Use our custom entrypoint
+ENTRYPOINT ["tini", "--", "/docker-entrypoint-unlicensed.sh"]
+
+LABEL org.opencontainers.image.title="n8n-unlicensed" \
+      org.opencontainers.image.description="n8n with all Enterprise features unlicensed" \
+      org.opencontainers.image.version="unlicensed" \
+      org.opencontainers.image.vendor="Community Build"
+

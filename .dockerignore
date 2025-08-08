@@ -1,19 +1,68 @@
-**/*.md
-**/.env
-.cache
-assets
-node_modules
-packages/node-dev
-packages/**/node_modules
-packages/**/dist
-packages/**/.turbo
-packages/**/*.test.*
+# Git
 .git
-.github
-!.github/scripts
-*.tsbuildinfo
-docker/compose
-docker/**/Dockerfile
+.gitignore
+
+# Node modules (will be installed in container)
+node_modules
+*/node_modules
+.npm
+.pnpm-debug.log*
+
+# Build artifacts that will be created in container
+dist
+*/dist
+build
+*/build
+compiled
+
+# Development files
+.env
+.env.local
+.env.*.local
+
+# IDE files
 .vscode
-packages/testing
-cypress
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+*.lcov
+.nyc_output
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Documentation
+*.md
+docs/
+
+# Cypress
+cypress/screenshots
+cypress/videos
+cypress/downloads
+
+# Temporary files
+tmp/
+temp/
+
+# Docker files (to avoid recursive copying)
+Dockerfile*
+docker-compose*
+.dockerignore

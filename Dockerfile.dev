@@ -1,0 +1,67 @@
+# Simplified Development Dockerfile for n8n with licensing removed
+FROM node:22-alpine
+
+# Install system dependencies including build tools
+RUN apk add --no-cache \
+    git \
+    openssh \
+    openssl \
+    graphicsmagick \
+    tini \
+    tzdata \
+    ca-certificates \
+    libc6-compat \
+    python3 \
+    make \
+    g++ \
+    jq
+
+# Install fonts
+RUN apk --no-cache add --virtual .build-deps-fonts msttcorefonts-installer fontconfig && \
+    update-ms-fonts && \
+    fc-cache -f && \
+    apk del .build-deps-fonts && \
+    find /usr/share/fonts/truetype/msttcorefonts/ -type l -exec unlink {} \;
+
+# Install npm and pnpm (using version specified in package.json)
+RUN npm install -g npm@11.4.2 full-icu@1.5.0 pnpm@10.12.1
+
+# Set environment variables
+ENV NODE_ENV=development
+ENV N8N_RELEASE_TYPE=dev
+ENV SHELL=/bin/sh
+ENV NODE_ICU_DATA=/usr/local/lib/node_modules/full-icu
+
+# Set working directory
+WORKDIR /n8n
+
+# Copy source code
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches ./patches/
+COPY packages ./packages/
+
+# Install dependencies and build
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
+
+# Create symlink for n8n binary
+RUN ln -s /n8n/packages/cli/bin/n8n /usr/local/bin/n8n
+
+# Create .n8n directory for user data
+RUN mkdir -p /n8n/.n8n && \
+    chown -R node:node /n8n
+
+# Add entrypoint script
+COPY docker/images/n8n/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 5678
+USER node
+
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
+
+LABEL org.opencontainers.image.title="n8n-unlicensed" \
+      org.opencontainers.image.description="n8n Workflow Automation Tool - All Features Unlicensed" \
+      org.opencontainers.image.source="https://github.com/n8n-io/n8n" \
+      org.opencontainers.image.url="https://n8n.io" \
+      org.opencontainers.image.version="unlicensed"

@@ -4,7 +4,8 @@ import { Service } from '@n8n/di';
 import type { BooleanLicenseFeature } from '@n8n/constants';
 import { UNLIMITED_LICENSE_QUOTA } from '@n8n/constants';
 
-
+// Export FeatureReturnType for other modules that need it
+export type { FeatureReturnType } from '@n8n/backend-common';
 
 /**
  * Mock License Service - All features are now unlicensed/available
@@ -17,8 +18,17 @@ export class License implements LicenseProvider {
 		this.logger.info('License system disabled - all features are available');
 	}
 
-	async init() {
-		// No-op - licensing disabled
+	async init(_options?: { isCli?: boolean }) {
+		// Accept options for CLI compatibility but ignore them
+		this.logger.debug('Mock License initialized');
+		return;
+	}
+
+	async loadCertStr(): Promise<string> {
+		return '';
+	}
+
+	async saveCertStr(): Promise<void> {
 		return;
 	}
 
@@ -53,30 +63,78 @@ export class License implements LicenseProvider {
 	}
 
 	// Legacy methods that return true for all features
-	isSharingEnabled(): boolean { return true; }
-	isLogStreamingEnabled(): boolean { return true; }
-	isLdapEnabled(): boolean { return true; }
-	isSamlEnabled(): boolean { return true; }
-	isApiKeyScopesEnabled(): boolean { return true; }
-	isAiAssistantEnabled(): boolean { return true; }
-	isAskAiEnabled(): boolean { return true; }
-	isAiCreditsEnabled(): boolean { return true; }
-	isAdvancedExecutionFiltersEnabled(): boolean { return true; }
-	isAdvancedPermissionsLicensed(): boolean { return true; }
-	isDebugInEditorLicensed(): boolean { return true; }
-	isBinaryDataS3Licensed(): boolean { return true; }
-	isMultiMainLicensed(): boolean { return true; }
-	isVariablesEnabled(): boolean { return true; }
-	isSourceControlLicensed(): boolean { return true; }
-	isExternalSecretsEnabled(): boolean { return true; }
-	isWorkflowHistoryLicensed(): boolean { return true; }
-	isAPIDisabled(): boolean { return false; } // API is enabled
-	isWorkerViewLicensed(): boolean { return true; }
-	isProjectRoleAdminLicensed(): boolean { return true; }
-	isProjectRoleEditorLicensed(): boolean { return true; }
-	isProjectRoleViewerLicensed(): boolean { return true; }
-	isCustomNpmRegistryEnabled(): boolean { return true; }
-	isFoldersEnabled(): boolean { return true; }
+	isSharingEnabled(): boolean {
+		return true;
+	}
+	isLogStreamingEnabled(): boolean {
+		return true;
+	}
+	isLdapEnabled(): boolean {
+		return true;
+	}
+	isSamlEnabled(): boolean {
+		return true;
+	}
+	isApiKeyScopesEnabled(): boolean {
+		return true;
+	}
+	isAiAssistantEnabled(): boolean {
+		return true;
+	}
+	isAskAiEnabled(): boolean {
+		return true;
+	}
+	isAiCreditsEnabled(): boolean {
+		return true;
+	}
+	isAdvancedExecutionFiltersEnabled(): boolean {
+		return true;
+	}
+	isAdvancedPermissionsLicensed(): boolean {
+		return true;
+	}
+	isDebugInEditorLicensed(): boolean {
+		return true;
+	}
+	isBinaryDataS3Licensed(): boolean {
+		return true;
+	}
+	isMultiMainLicensed(): boolean {
+		return true;
+	}
+	isVariablesEnabled(): boolean {
+		return true;
+	}
+	isSourceControlLicensed(): boolean {
+		return true;
+	}
+	isExternalSecretsEnabled(): boolean {
+		return true;
+	}
+	isWorkflowHistoryLicensed(): boolean {
+		return true;
+	}
+	isAPIDisabled(): boolean {
+		return false;
+	} // API is enabled
+	isWorkerViewLicensed(): boolean {
+		return true;
+	}
+	isProjectRoleAdminLicensed(): boolean {
+		return true;
+	}
+	isProjectRoleEditorLicensed(): boolean {
+		return true;
+	}
+	isProjectRoleViewerLicensed(): boolean {
+		return true;
+	}
+	isCustomNpmRegistryEnabled(): boolean {
+		return true;
+	}
+	isFoldersEnabled(): boolean {
+		return true;
+	}
 
 	getCurrentEntitlements() {
 		return [];
@@ -100,12 +158,24 @@ export class License implements LicenseProvider {
 	}
 
 	// Legacy quota methods - all return unlimited
-	getUsersLimit(): number { return UNLIMITED_LICENSE_QUOTA; }
-	getTriggerLimit(): number { return UNLIMITED_LICENSE_QUOTA; }
-	getVariablesLimit(): number { return UNLIMITED_LICENSE_QUOTA; }
-	getAiCredits(): number { return UNLIMITED_LICENSE_QUOTA; }
-	getWorkflowHistoryPruneLimit(): number { return UNLIMITED_LICENSE_QUOTA; }
-	getTeamProjectLimit(): number { return UNLIMITED_LICENSE_QUOTA; }
+	getUsersLimit(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
+	getTriggerLimit(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
+	getVariablesLimit(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
+	getAiCredits(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
+	getWorkflowHistoryPruneLimit(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
+	getTeamProjectLimit(): number {
+		return UNLIMITED_LICENSE_QUOTA;
+	}
 
 	getPlanName(): string {
 		return 'Open Source';

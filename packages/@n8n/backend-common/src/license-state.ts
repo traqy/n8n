@@ -7,7 +7,7 @@ import type { FeatureReturnType } from './types';
 @Service()
 export class LicenseState {
 	// License provider no longer needed - all features are unlicensed
-	setLicenseProvider() {
+	setLicenseProvider(_licenseProvider?: any) {
 		// No-op - licensing disabled
 	}
 
